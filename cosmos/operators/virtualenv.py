@@ -92,10 +92,12 @@ class DbtVirtualenvBaseOperator(DbtLocalBaseOperator):
         return subprocess_result
 
     def execute(self, context: Context) -> str:
-        output = super().execute(context)
-        if self._venv_tmp_dir:
-            self._venv_tmp_dir.cleanup()
-        return output
+        try:
+            output = super().execute(context)
+            return output
+        finally:
+            if self._venv_tmp_dir:
+                self._venv_tmp_dir.cleanup()
 
 
 class DbtLSVirtualenvOperator(DbtVirtualenvBaseOperator, DbtLSLocalOperator):
